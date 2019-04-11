@@ -117,28 +117,9 @@
             <div class="table-responsive-md">
                       <table class="table mb-5 table-striped" id="myTable">
                           <thead>
-                              <tr>
-                                <th>ID</th>
-                                <th>title</th>
-                                <th>Photo</th>
-                                <th>Price</th>
-                                <th>Date Added</th>
-                              </tr>
+                              
                             </thead>
                             <tbody class="return-container">
-                              
-                                                            
-                              <tr style="vertical-align: middle">
-                                <td class="text-dark">115</td>
-                                <td>
-                                    <img src="http://mycraftbook.herokuapp.com/uploads/images/2018/08/introduction-to-ankara-crafts043557200-1535364714623.jpeg" alt="INTRODUCTION TO ANKARA CRAFTS" width="80">
-                                  </td>
-                                <td class="text-dark" style="width:33%">INTRODUCTION TO ANKARA CRAFTS</td>
-                                
-                                <td style="color:seagreen"><strong>N 1000</strong></td>
-                                <td>Mon, 11 June 2018</td>
-    
-                              </tr>
                               
                                   
                                                             
@@ -208,15 +189,40 @@ function  send_form_data(form_object,load_container, return_container,load_selec
                                 //console.log(json_string);
 
                                 var empObj  = data.response.results.work;
+                                var return_html = '';
 
                                 data.response.results.work.forEach(function(index) {
-                                    console.log(index.id.type);
+
+                                  var id = index.id.$t;
+                                  var title = index.best_book.title;
+                                  var author = index.best_book.author.name;
+                                  var thumbnail = index.best_book.small_image_url;
+                                  var pub_date = index.original_publication_day.$t + ' / ' + 
+                                  index.original_publication_month.$t + ' / '
+                                   + index.original_publication_year.$t;
+
+                                 return_html += '<tr style="vertical-align: middle">'+
+                                '<td class="text-dark">'+id+'</td>'+
+                                '<td>'+
+                                    '<img src="'+thumbnail+'" alt="" width="80">'+
+                                  '</td>'+
+                                '<td class="text-dark" style="width:33%">'+title+'</td>'+
+                                
+                                '<td style="color:seagreen"><strong>'+author+'</strong></td>'+
+                                '<td>'+pub_date+'</td>'+
+    
+                              '</tr>';
+
+
                                  });
 
-                               
-                                $(return_container).html(json_string);
+                                 var thead = '<tr>   <th>ID</th> <th>Photo</th> <th>title</th>   <th>Author</th><th>Date Added</th>  </tr>';
+
+
+                                 $('thead').html(thead);
+                                $(return_container).html(return_html);
                                 
-                                //console.log(data);
+                                console.log(json_string);
 
 
 
