@@ -193,7 +193,20 @@ function  send_form_data(form_object,load_container, return_container,load_selec
 
                                 data.response.results.work.forEach(function(index) {
 
-                                  var id = index.id.$t;
+                                
+
+
+                                 });
+
+                                 for (var i = 0; i <= 9 ; i++) {
+
+                                  if(i < data.response.results.work.length )
+                                  {
+                                        var index = data.response.results.work[i];
+
+                                  
+                                        // your other stuff goes here
+                                        var id = index.id.$t;
                                   var title = index.best_book.title;
                                   var author = index.best_book.author.name;
                                   var thumbnail = index.best_book.small_image_url;
@@ -212,9 +225,8 @@ function  send_form_data(form_object,load_container, return_container,load_selec
                                 '<td>'+pub_date+'</td>'+
     
                               '</tr>';
-
-
-                                 });
+                                }
+                                    }
 
                                  var thead = '<tr>   <th>ID</th> <th>Photo</th> <th>title</th>   <th>Author</th><th>Date Added</th>  </tr>';
 
