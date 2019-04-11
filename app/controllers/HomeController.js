@@ -43,6 +43,6 @@ module.exports = class HomeController extends BaseController {
      */
     homeAction(req, res, next) {
         res.sendFile('/public/index.html',{ root: '.'});
-      //  res.status(200).json(super.sendResponse('SUCCESS', "You know for search books"));
+        
     }
 }

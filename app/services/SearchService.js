@@ -84,6 +84,8 @@ module.exports = class SearchService {
             (comparison * -1) : comparison
           );
         });
+
+
         
         break;
 
@@ -102,13 +104,13 @@ module.exports = class SearchService {
 
           let aTimeStamp =  (new Date(pubDateA)).getTime();
           let bTimeStamp = (new Date(pubDateB)).getTime();
-          console.log(pubDateA + ' | ' +aTimeStamp);
-          console.log(pubDateB + ' | ' +bTimeStamp);
 
           return  (order == 'date-desc') ?  parseFloat(bTimeStamp) - parseInt(aTimeStamp) :  parseInt(aTimeStamp) - parseInt(bTimeStamp)    ;
 
           });  
         break;
+
+        default: break;
 
       }
 
@@ -127,27 +129,31 @@ module.exports = class SearchService {
         ).then(xml => { 
           let max_results = 10 ;
           let json = JSON.parse(parser.toJson(xml));
-          let resolvedData =  json.GoodreadsResponse.search;
+          let mainData =  json.GoodreadsResponse.search;
 
-          let list = {}; // work list or rather book list
+          let list = {}; // initialize empty list
 
           let finalResult = { 
             returnData : list, 
-            queryString : resolvedData.query,
+            queryString : mainData.query,
             filter : filter
           
           };
 
-          if(resolvedData.results)
+          if(mainData.results)
           {
-            list = this.filter(resolvedData.results.work, filter, max_results);
-            
-       
+            if(mainData.results.work.length > 0 )
+            {   
+              list = this.filter(mainData.results.work, filter, max_results); 
+            } else
+            {
+              list = mainData.results.work;
+            }
           }
         
           finalResult = { 
             returnData : list, 
-            queryString : resolvedData.query,
+            queryString : mainData.query,
             filter : filter
           
           };
