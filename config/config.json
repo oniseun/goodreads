@@ -1,0 +1,7 @@
+{
+  "serverPort": 8088,
+  "goodreads": {
+    "base_url": "https://www.goodreads.com",
+    "search_resource": "/search/index.xml?q="
+  }
+}

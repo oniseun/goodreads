@@ -1,0 +1,11 @@
+/node_modules
+/storage/*.key
+/secret
+/vendor
+/.idea
+/.vscode
+/.vagrant
+*.zip
+*.pem
+*.env
+/firebase-service.json

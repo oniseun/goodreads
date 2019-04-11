@@ -1,0 +1,40 @@
+{
+  "name": "searchservice",
+  "version": "1.0.0",
+  "description": "Just a test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/josemcsantos/goodreads-go-nodejs.git"
+  },
+  "keywords": [
+    "search",
+    "service"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://bitbucket.org/josemcsantos/goodreads-go-nodejs.git"
+  },
+  "homepage": "https://bitbucket.org/josemcsantos/goodreads-go-nodejs.git#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "express": "^4.16.4",
+    "geoip-lite": "^1.3.6",
+    "helmet": "^3.16.0",
+    "morgan": "^1.9.1",
+    "node-fetch": "^2.3.0",
+    "response-time": "^2.3.2",
+    "winston": "^3.2.1",
+    "xml2json": "^0.11.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
