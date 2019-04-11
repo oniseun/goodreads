@@ -36,8 +36,11 @@ module.exports = class SearchController extends BaseController {
      */
     async searchAction(req, res, next) {
         try {
-            let result = await  this.SearchService.search(req.query['q']);
+            let result = await  this.SearchService.search(req.query['q'],req.query['filter']);
+
+           
             res.status(200).json(super.sendResponse('SUCCESS', result));
+
         } catch (e) {
             res.status(500).json(super.sendResponse('BACKEND_ERROR', e.message));
         }

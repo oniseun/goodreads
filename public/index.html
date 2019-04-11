@@ -65,7 +65,7 @@
     <div class="row">
 
       <div class="col-md-12">
-          <h1 class="display-4 text-secondary"> GoodReads Book Search </h1>
+          <h1 class="display-4 text-secondary"> GoodReads search </h1>
          <hr>
 
       </div>
@@ -85,21 +85,35 @@
 
 
            
-		<div class="p-4 bg-light rounded">
+		<div class="p-4 bg-light rounded-pill">
 			<form action="/api/v1/search" method="get">
 
 					<div class="row">
 						
-						<div class="col-md-10">
+						<div class="col-md-7">
 							
-							<input type="text" name="q" class="form-control"value="" placeholder="Search Books">
+							<input type="text"  name="q" class="form-control rounded-pill searchInput" value="" placeholder="Search Books">
 							
 						</div>
+            <div class="col-md-3">
+                <select class="form-control rounded-pill filterInput" name="filter" id="sel1">
 
+                    <option value="all">Sort By (All)</option>
+                    <option value="date-asc">Date (Oldest First)</option>
+                    <option value="date-desc">Date (Newest First)</option>
+                    <option value="author-asc">Author (ASC)</option>
+                    <option value="author-desc">Author (DESC)</option>
+                    <option value="rating-asc">rating (Low-High) </option>
+                    <option value="rating-desc">rating (High-low)</option>
+                    <option value="title-asc">title (ASC)</option>
+                    <option value="title-desc">title (DESC)</option>
+                
+                </select>
+            </div>
 
 						<div class="col-md-2">
 
-								<button type="submit" class="btn btn-success ajax-submit btn-block stretch mr-10">
+								<button type="submit" class="btn btn-success ajax-submit btn-block rounded-pill stretch mr-10">
 									<i class="fa fa-search" aria-hidden="true"></i></button>
 							
 
@@ -109,25 +123,19 @@
 
 				</form>
 			</div>
-			<p><br></p>
 
-      <p class="ajax-message"></p>
+      <p class="ajax-message mt-2"></p>
 
       
-            <div class="table-responsive-md">
-                      <table class="table mb-5 table-striped" id="myTable">
-                          <thead>
-                              
-                            </thead>
-                            <tbody class="return-container">
-                              
-                                  
-                                                            
-                              
-            
-                            </tbody>
-                      </table>
+      <div class="row">
+          <div class="col-md-12 return-container ">
             </div>
+      </div>
+
+  
+
+
+
           </div>				
 				</div>	
     
@@ -172,6 +180,73 @@
     
      <script src="http://malsup.github.com/jquery.form.js"></script>
     <script>
+function e(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function rating(avr_rating)
+{
+  var avr = Math.floor(avr_rating);
+  var checkedStar = '<span class="fa fa-star text-warning"></span>';
+  var uncheckedStar = '<span class="fa fa-star text-dark"></span>';
+  let checkedStarIcons = '';
+  let uncheckedStarIcons = '';
+
+  checkedStarIcons = checkedStar.repeat(avr);
+  if(avr < 5)
+  {
+    uncheckedStarIcons = uncheckedStar.repeat((5 - avr));
+  }
+
+    return checkedStarIcons + uncheckedStarIcons  ;
+
+}
+function card(id,thumbnail,title,author,pubDate,average_rating,ratings_count,books_count,text_reviews_count)
+{
+  return `   <div class="media pb-1 pt-1 align-middle  wow fadeIn">
+                                                    <a href="/ebook/${id}" class="mt-0">
+                                                    <img class="mr-4 shadow" height="150" width="130"   src="${thumbnail}" alt="INTRODUCTION TO ANKARA CRAFTS">
+                                                    </a>
+                                                    <div class="media-body">
+                                                    <h3 class="mt-md-2 ubuntu-font ">
+                                                    <a href="/ebook/${id}"  class="text-danger"><strong>${title}</strong></a>
+                                                    </h3>
+                                                    <h5 class="text-secondary mt-3">
+                                                    <strong>
+                                                        <span class="badge badge-light rounded-pill p-2 pl-3 pr-3" title="Books in stock  ${books_count} ">  
+                                                       <i class="fa fa-book"></i> ${books_count} </span>
+                                                    <span class="badge badge-light rounded-pill p-2 pl-3 pr-3">  
+                                                       <i class="fa fa-user-circle"></i> ${author} </span>
+                                                    <span class="badge badge-light text-secondary rounded-pill p-2 pl-3 pr-3 mt-sm-2"> 
+                                                         <i class="fa fa-calendar"></i> ${pubDate} </span>
+                                                    </strong>
+                                                    </h5>
+
+                                                    <h6 class="text-secondary mt-3">
+                                                    <strong>
+                                                        <span title="${average_rating}">
+                                                    ${rating(average_rating)} (${ratings_count})
+                                                    </span>
+
+                                                    <span class="badge badge-light text-secondary rounded-pill py-1 px mt-sm-2"> 
+                                                         <i class="fa fa-comments"></i> ${text_reviews_count} reviews </span>
+                                                    </strong>
+                                                    </h6>
+
+                                                    </div>
+                                                    </div>
+                                                    <hr>`;
+}
+
+function ajax_message(type,message)
+{
+  return `<div class="alert alert-${type} alert-dismissible fade show rounded-pill" role="alert"><i class="fa fa-check-circle"></i> 
+    ${message}   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>`;
+}
+
 function  send_form_data(form_object,load_container, return_container,load_selector)
  {
         form_object.ajaxSubmit({
@@ -184,57 +259,61 @@ function  send_form_data(form_object,load_container, return_container,load_selec
                        complete:function(){ },
                        success:function(data)
                               {
-                                $(load_container).html(' ');
-                                var json_string = JSON.stringify(data.response.results.work);
-                                //console.log(json_string);
+                                let bookList = [] ;
+                                let bookCount = 0 ;
 
-                                var empObj  = data.response.results.work;
-                                var return_html = '';
+                                if(data.response.returnData.length > 0)
+                                {
+                                    bookList = data.response.returnData ;
+                                    bookCount = bookList.length;
 
-                                data.response.results.work.forEach(function(index) {
+                                 
+                                    
+                                }
+                                let searchString = data.response.queryString;
+                                let filter = $('.filterInput option:selected').text();
 
-                                
+                                let ajaxMSG =  ajax_message('success',`<strong>${bookCount} results</strong> 
+                                found for your search <strong>"${searchString}"</strong> 
+                                filter: <strong>"${filter}"</strong>` );
+
+                                if(bookCount < 1)
+                                {
+                                  ajaxMSG =  ajax_message('warning',`No results found for your search <strong>"${searchString}"</strong>` );                            
+                                }
+
+                                $(load_container).html(ajaxMSG);
+
+                                var return_html = '<hr>';
 
 
-                                 });
-
-                                 for (var i = 0; i <= 9 ; i++) {
-
-                                  if(i < data.response.results.work.length )
-                                  {
-                                        var index = data.response.results.work[i];
-
+                                bookList.forEach(function(index) {
+    
                                   
                                         // your other stuff goes here
-                                        var id = index.id.$t;
-                                  var title = index.best_book.title;
+                                  var id = index.id.$t;
+                                  var title = e(index.best_book.title);
+                                  var average_rating = index.average_rating;
+                                  var ratings_count = index.ratings_count.$t;
+                                  var books_count = index.books_count.$t;
+                                  var text_reviews_count = index.text_reviews_count.$t;
                                   var author = index.best_book.author.name;
-                                  var thumbnail = index.best_book.small_image_url;
-                                  var pub_date = index.original_publication_day.$t + ' / ' + 
-                                  index.original_publication_month.$t + ' / '
-                                   + index.original_publication_year.$t;
-
-                                 return_html += '<tr style="vertical-align: middle">'+
-                                '<td class="text-dark">'+id+'</td>'+
-                                '<td>'+
-                                    '<img src="'+thumbnail+'" alt="" width="80">'+
-                                  '</td>'+
-                                '<td class="text-dark" style="width:33%">'+title+'</td>'+
-                                
-                                '<td style="color:seagreen"><strong>'+author+'</strong></td>'+
-                                '<td>'+pub_date+'</td>'+
-    
-                              '</tr>';
-                                }
-                                    }
-
-                                 var thead = '<tr>   <th>ID</th> <th>Photo</th> <th>title</th>   <th>Author</th><th>Date Added</th>  </tr>';
+                                  var thumbnail = index.best_book.image_url;
+                                  var pubDay = typeof  index.original_publication_day.$t != 'undefined' ? index.original_publication_day.$t+ ' / '  : '';
+                                  var pubMonth = typeof  index.original_publication_month.$t != 'undefined' ? index.original_publication_month.$t+ ' / '  : '';
+                                  var pubYear = typeof  index.original_publication_year.$t != 'undefined' ? index.original_publication_year.$t  : '';
+                                 
+                                  var pubDate = pubDay + pubMonth + pubYear ;
 
 
-                                 $('thead').html(thead);
+                                  return_html += card(id,thumbnail,title,author,pubDate,average_rating,ratings_count,books_count,text_reviews_count);
+
+                                });
+
+
                                 $(return_container).html(return_html);
                                 
-                                console.log(json_string);
+                                console.log(data);
 
 
 
@@ -242,11 +321,9 @@ function  send_form_data(form_object,load_container, return_container,load_selec
 
                        error:function()
                               {
-                                $(load_container).html(' ');
+                                $(load_container).html(ajax_message('warning',`Please check your internet connection and try again` ));
 
-                                   $(return_container).html(
-                                   '<tr><td colspan="5"><center><div class="alert alert-danger"><span class="alert-close">&times;</span>\n\
-                                    <b>internal error:</b>Please check your internet connection and try again</div></center></td></tr>');
+                                 
                                }
 
                       });
@@ -258,6 +335,16 @@ function  send_form_data(form_object,load_container, return_container,load_selec
     var $loading_circle = '<center><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></center>';
    
     $('body').on('click','.ajax-submit',
+    function (e)
+    {
+      var $form = $(this).parents('form');
+       e.preventDefault();
+      send_form_data($form, '.ajax-message','.return-container', $loading_circle);
+
+
+    });
+
+    $('body').on('change','.filterInput',
     function (e)
     {
       var $form = $(this).parents('form');

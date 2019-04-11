@@ -2,6 +2,7 @@
   "serverPort": 8088,
   "goodreads": {
     "base_url": "https://www.goodreads.com",
-    "search_resource": "/search/index.xml?q="
+    "search_resource": "/search/index.xml?q=",
+    "key" : "bZFY4Rc5TZpBEc89fv7XKA"
   }
 }
